@@ -1,0 +1,6 @@
+module.exports = {
+  'AWS_SECRET_ACCESS_KEY':'7gR2FX3ztrrQ9MpbQ68TbxWNohtLYJJQfWTrkbjX',
+  'AWS_ACCESS_KEY_ID': 'AKIAIVHJNYXR3WMCEMGA',
+  'AWS_BUCKET': 'arthtech',
+  'AWS_EXPIRE_DURATION': 10
+};
