@@ -1,4 +1,3 @@
-module.exports = {
-  'secret':'adnetworking',
-  'database': 'mongodb://localhost/tutors2019'
-};
+module.exports = { 
+	'database': 'mongodb://localhost:27017/tutors2019'
+}
