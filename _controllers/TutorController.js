@@ -4,8 +4,8 @@ var User = require('../_models/user');
 var helpersMethods = require('../_helpers/helpersMethods');
 
 
-class UserController {
+class TutorController {
 
 }
 
-module.exports = UserController;
+module.exports = TutorController;
