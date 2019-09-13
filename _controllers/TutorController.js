@@ -1,11 +1,11 @@
 var mongoose = require('mongoose');
-
 var User = require('../_models/user');
-var helpersMethods = require('../_helpers/helpersMethods');
 
 
 class TutorController {
-
+	getSearchTutors = (req, res) => {
+		res.send("Hello everyone");
+	}
 }
 
 module.exports = TutorController;

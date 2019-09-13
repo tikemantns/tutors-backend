@@ -4,16 +4,24 @@ var cookieParser = require('cookie-parser');
 var logger = require('morgan');
 var session = require('express-session');
 var mongoose = require('mongoose');
+const dotenv = require('dotenv');
+var passport = require('passport');
+// var jwt = require('jsonwebtoken');
 
-
-var config = require('./config/database');
-const passport = require('passport'); 
 const routes = require('./routes');
 
 var app = express();
 
-mongoose.connect(config.database, { useCreateIndex: true, useNewUrlParser: true });
+dotenv.config();  
 
+mongoose.connect(process.env.DB_CONNECT, { useCreateIndex: true, useNewUrlParser: true }, 
+	(err, success) => {
+		if(err) console.log(err);
+	});
+
+
+app.use(passport.initialize());
+require('./config/passport')(passport);
 
 app.use(session({
     key: 'token',
@@ -30,7 +38,7 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
-app.use(passport.initialize());
+
 
 app.use('/', routes);
 

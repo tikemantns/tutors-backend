@@ -27,11 +27,16 @@ let userSchema = new Schema({
 
 userSchema.pre('save', function(next){
 	if (this.password) {
-    	const salt = bcrypt.genSaltSync(10);//or your salt constant
-    	this.password = bcrypt.hashSync(this.password, salt);
+    	this.password = bcrypt.hashSync(this.password, bcrypt.genSaltSync(10));
   	}
  	next();
 });
 
+userSchema.methods.comparePassword = function(password, cb){
+	bcrypt.compare(password, this.password, function(err, isMatch){
+		if(err) return cb(null, false);
+		if(isMatch) return cb(null, isMatch);
+	});
+}  
 
 module.exports = mongoose.model('User', userSchema);
