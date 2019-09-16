@@ -3,22 +3,18 @@ const Schema = mongoose.Schema;
 var bcrypt = require('bcrypt');
 
 
-let userSchema = new Schema({
+let invigilatorSchema = new Schema({
 	name: { type: String, required: true, index: true },
 	email: { type: String, unique: true, required: true },
 	phone: { type: String, unique: true, required: true },
 	password: { type: String, required: true, select: false },
 	address: { type: String, required: true, index: true },
-	type: { type: String, required: true },
+	pincode: { type: String, required: true, index: true },
 	schools: { type: String, required: true },
 	graduation: { type: String, required: true },
 	other_education: { type: String },
-	classes: { type: String, index: true },
-	subjects: { type: String, index: true },
 	experience: { type: String, index: true },
-	mode_of_tutoring: { type: String, index: true },
-	tution_fee: { type: String, index: true },
-	institue: { type: String },
+	fee: { type: String, index: true },
 	loggedIn_at: { type: Date },
 	loggedOut_at: { type : Date },
 	created_at: { type : Date, default: Date.now },
@@ -26,36 +22,34 @@ let userSchema = new Schema({
 });
 
 
-userSchema.index({ 
+invigilatorSchema.index({ 
 	name: 'text',
 	address: 'text', 
 	classes: 'text', 
 	experience: 'text', 
-	mode_of_tutoring: 'text', 
-	tution_fee: 'text', 
-	subjects: 'text' 
+	fee: 'text',
+	pincode: 'text'
 });
 
 
-userSchema.pre('save', function(next){
+invigilatorSchema.pre('save', function(next){
 	if (this.password) {
     	this.password = bcrypt.hashSync(this.password, bcrypt.genSaltSync(10));
   	}
  	next();
 });
 
-userSchema.post('save', function (error, doc, next) {
+invigilatorSchema.post('save', function (error, doc, next) {
     if (error.name === 'MongoError' && error.code === 11000) 
         next('This Email/Phone already exists');
     else next(error);
 });
 
-
-userSchema.methods.comparePassword = function(password, cb){
+invigilatorSchema.methods.comparePassword = function(password, cb){
 	bcrypt.compare(password, this.password, function(err, isMatch){
 		if(err) return cb(null, false);
 		if(isMatch) return cb(null, isMatch);
 	});
 }  
 
-module.exports = mongoose.model('User', userSchema);
+module.exports = mongoose.model('Invigilator', invigilatorSchema);
