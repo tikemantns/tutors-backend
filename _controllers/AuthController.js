@@ -19,7 +19,7 @@ class AuthController {
 	loginUser = async (req, res) => {
 		try{
 			let user = await User.findOne({email: req.body.email});
-			user.comparePassword(req.body.password, (err,isMatch) => {
+			user.comparePassword(req.body.password, (err, isMatch) => {
 				if(isMatch && !err){
 					const token = jwt.sign(user.toJSON(), process.env.SECRET_KEY, { expiresIn: 604800 });
 					res.header({'Authorization': token});

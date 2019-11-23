@@ -7,7 +7,8 @@ let userSchema = new Schema({
 	name: { type: String, required: true, index: true },
 	email: { type: String, unique: true, required: true },
 	phone: { type: String, unique: true, required: true },
-	password: { type: String, required: true, select: false },
+	gender: { type: String, required: true },
+	password: { type: String, required: true },
 	address: { type: String, required: true, index: true },
 	type: { type: String, required: true },
 	schools: { type: String, required: true },
@@ -17,7 +18,7 @@ let userSchema = new Schema({
 	subjects: { type: String, index: true },
 	experience: { type: String, index: true },
 	mode_of_tutoring: { type: String, index: true },
-	tution_fee: { type: String, index: true },
+	tution_fee: { type: Number, index: true },
 	institue: { type: String },
 	loggedIn_at: { type: Date },
 	loggedOut_at: { type : Date },
@@ -31,16 +32,12 @@ userSchema.index({
 	address: 'text', 
 	classes: 'text', 
 	experience: 'text', 
-	mode_of_tutoring: 'text', 
-	tution_fee: 'text', 
 	subjects: 'text' 
 });
 
 
 userSchema.pre('save', function(next){
-	if (this.password) {
-    	this.password = bcrypt.hashSync(this.password, bcrypt.genSaltSync(10));
-  	}
+    this.password = this.password?bcrypt.hashSync(this.password, bcrypt.genSaltSync(10)):'';
  	next();
 });
 
@@ -53,8 +50,8 @@ userSchema.post('save', function (error, doc, next) {
 
 userSchema.methods.comparePassword = function(password, cb){
 	bcrypt.compare(password, this.password, function(err, isMatch){
-		if(err) return cb(null, false);
-		if(isMatch) return cb(null, isMatch);
+		if(err){ return cb(null, false) }
+		if(isMatch){ return cb(null, isMatch) }
 	});
 }  
 

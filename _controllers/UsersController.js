@@ -5,16 +5,38 @@ var jwt = require('jsonwebtoken');
 class TutorController {
 
 	getSearchTutors = async (req, res) => {
-		let obj = {};
-		if(req.query.search){
-			let term = new RegExp(req.query.search, 'i');
-			obj = { "$text": { "$search": term  } };
+		try{
+
+			let obj = {
+			    $or: [
+			        { 'name': { $regex: new RegExp(req.query.search, 'i') } },
+			        { 'classes': { $regex: new RegExp(req.query.search, 'i') } },
+			        { 'subjects': { $regex: new RegExp(req.query.search, 'i') } }
+			    ]
+			};
+
+			if(req.query.gender){
+			    obj.$and = (obj.$and || []);
+			    obj.$and.push({ 'gender': req.query.gender });
+			}
+			if(req.query.mode_of_tutoring){
+			    obj.$and = (obj.$and || []);
+			    obj.$and.push({ 'mode_of_tutoring': req.query.mode_of_tutoring });
+			}
+			if(req.query.tution_fee_start && req.query.tution_fee_end){
+			    obj.$and = (obj.$and || []);
+			    obj.$and.push({ 'tution_fee': { $gt: req.query.tution_fee_start, $lt: req.query.tution_fee_end } });
+			}
+
+			let sortObject = {};
+			let sortby = req.query.sortby;
+			let sortorder = req.query.sortorder;
+			sortObject[sortby] = sortorder;
+
+			return res.json({response: await User.find(obj).select('-password -phone -email').sort(sortObject)}) 
+		}catch(err){
+			return res.json({error: err}) 
 		}
-		User.find(obj).then( list => { 
-			return res.json({response: list}) 
-		}).catch( error => { 
-			return res.json({error: error}) 
-		});
 	}
 
 	loggedInUser = async (req, res) => {
@@ -24,7 +46,7 @@ class TutorController {
 	}
 
 	viewTutorsDetails = async (req, res) => {
-		User.findById(req.query.id).then( tutor => {
+		User.findById(req.query.id).select('-password -phone -email').then( tutor => {
 			return res.json({response: tutor});
 		}).catch( error => {
 			return res.json({error: error});
