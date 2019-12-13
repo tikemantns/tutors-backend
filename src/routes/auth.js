@@ -1,8 +1,8 @@
 const express = require('express');
 const router = express.Router();
 const User = require('../_models/user');
+const auth = require('../middleware/auth')
 const Invigilator = require('../_models/invigilator');
-const bcrypt = require('bcrypt');
 
 
 router.post('/register', async (req, res) => {
@@ -25,6 +25,20 @@ router.post('/login', async (req, res) => {
         console.log(err)
         return res.json({error: err});
     }
+})
+
+router.post('/logout', auth, async (req, res) => {
+    try{
+        req.user.tokens = req.user.tokens.filter( (token) => {
+            return token.token !== req.token
+        })
+        
+        await req.user.save()
+        res.send('User looged out successfully')
+    } catch(e) {
+        res.status(500).send()
+    }    
+
 })
 
 router.post('/invigilator-registration', async (req, res) => {

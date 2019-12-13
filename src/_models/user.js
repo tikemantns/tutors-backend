@@ -59,9 +59,13 @@ userSchema.index({
 });
 
 
-userSchema.pre('save', function(next){
-    this.password = this.password?bcrypt.hashSync(this.password, bcrypt.genSaltSync(10)):''
- 	next()
+userSchema.pre('save', async function(next){
+   const user = this
+
+   if(user.isModified('password')){
+	   user.password = 	await bcrypt.hash(user.password, 8)
+   }
+   next()
 })
 
 userSchema.post('save', function (error, doc, next) {
@@ -72,7 +76,7 @@ userSchema.post('save', function (error, doc, next) {
 
 userSchema.methods.generateAuthToken = async function(){
 	let user = this
-	const token = jwt.sign(user.toJSON(), process.env.SECRET_KEY, { expiresIn: 604800 });
+	const token = jwt.sign({ _id: user._id.toString() }, process.env.SECRET_KEY, { expiresIn: 604800 });
 	user.tokens = user.tokens.concat({token})
 	await user.save()
 
@@ -89,7 +93,7 @@ userSchema.methods.toJSON = function() {
 userSchema.statics.findByCredentials =  async (email, password) => {
 	const user = await User.findOne({ email })
 	if(!user){
-		throw new Error('Unable to login1.')
+		throw new Error('Unable to login.')
 	}
 	const isMatch = await bcrypt.compare(password, user.password)
 	if(!isMatch){
@@ -97,12 +101,5 @@ userSchema.statics.findByCredentials =  async (email, password) => {
 	}
 	return user
 } 
-
-userSchema.methods.comparePassword = function(password, cb){
-	bcrypt.compare(password, this.password, function(err, isMatch){
-		if(err){ return cb(null, false) }
-		if(isMatch){ return cb(null, isMatch) }
-	})
-}  
 
 const User = module.exports = mongoose.model('User', userSchema)

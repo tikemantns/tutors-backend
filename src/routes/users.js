@@ -1,8 +1,8 @@
-var express = require('express');
-var router = express.Router();
-var passport = require('passport');
-var User = require('../_models/user');
-var jwt = require('jsonwebtoken');
+const express = require('express');
+const router = express.Router();
+const auth = require('../middleware/auth');
+const User = require('../_models/user');
+const jwt = require('jsonwebtoken');
 
 router.get('/tutors', async (req, res) => {
     try{
@@ -51,10 +51,8 @@ router.get('/tutors', async (req, res) => {
     }
 })
 
-router.get('/logged-in-user', passport.authenticate('jwt', {session: false}), async (req, res) => {
-    let user = await jwt.verify((req.headers.authorization).split(' ')[1], process.env.SECRET_KEY);
-    delete user.password;
-    return res.json(user);
+router.get('/logged-in-user', auth, async (req, res) => {
+    return res.json(req.user);
 })
 
 router.get('/tutor-details', async (req, res) => {
