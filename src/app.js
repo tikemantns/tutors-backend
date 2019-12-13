@@ -3,16 +3,14 @@ const path = require('path')
 const cors = require('cors')
 const cookieParser = require('cookie-parser')
 const logger = require('morgan')
-const session = require('express-session')
-const mongoose = require('mongoose')
 const dotenv = require('dotenv')
-const passport = require('passport')
-// const jwt = require('jsonwebtoken')
 
 const routes = require('./routes')
 
 const app = express()
 
+dotenv.config()  
+require('./db/database')
 //setting up for cross origin
 
 app.use(function (req, res, next) {
@@ -26,26 +24,6 @@ app.use(function (req, res, next) {
 
 app.use(cors())
 
-dotenv.config()  
-
-mongoose.connect(process.env.DB_CONNECT, { useCreateIndex: true, useNewUrlParser: true }, 
-	(err, success) => {
-		if(err) console.log(err)
-	})
-
-
-app.use(passport.initialize())
-require('./config/passport')(passport)
-
-app.use(session({
-    key: 'token',
-    secret: 'user_token',
-    resave: false,
-    saveUninitialized: false,
-    cookie: {
-        expires: 600000
-    }
-}))
 
 app.use(logger('dev'))
 app.use(express.json())
