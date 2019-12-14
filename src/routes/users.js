@@ -31,7 +31,7 @@ router.get('/tutors', async (req, res) => {
         }
         if(req.query.tution_fee_start && req.query.tution_fee_end){
             obj.$and = (obj.$and || []);
-            obj.$and.push({ 'tution_fee': { $gt: parseInt(req.query.tution_fee_start), $lt: parseInt(req.query.tution_fee_end) } });
+            obj.$and.push({ 'tution_fee': { $gte: parseInt(req.query.tution_fee_start), $lte: parseInt(req.query.tution_fee_end) } });
         }
 
         let sortObject = {};
@@ -39,7 +39,7 @@ router.get('/tutors', async (req, res) => {
         let sortorder = req.query.sortorder;
         sortObject[sortby] = sortorder;
         let options = {
-            select:   '-password -phone -email',
+            select:   '-password -phone -email -tokens',
             sort:     sortObject,
             lean:     true,
             offset:   parseInt(req.query.page), 
