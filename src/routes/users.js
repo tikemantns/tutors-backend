@@ -33,6 +33,11 @@ router.get('/tutors', async (req, res) => {
             obj.$and.push({ 'tution_fee': { $gte: parseInt(req.query.tution_fee_start), $lte: parseInt(req.query.tution_fee_end) } });
         }
 
+        
+        obj.$and = (obj.$and || []);
+        obj.$and.push({ 'type': 1 });
+    
+
         let sortObject = {};
         let sortby = req.query.sortby;
         let sortorder = req.query.sortorder;
