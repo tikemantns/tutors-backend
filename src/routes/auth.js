@@ -1,9 +1,17 @@
-const express = require('express');
-const router = express.Router();
-const User = require('../_models/user');
+const express = require('express')
+const router = express.Router()
+const User = require('../_models/user')
 const auth = require('../middleware/auth')
-const Invigilator = require('../_models/invigilator');
+const Invigilator = require('../_models/invigilator')
+const sendEmail = require('../_helpers/email')
 
+router.post('/send-otp', async (req, res) => {
+    try {
+        return res.json({"response": {"OTP":"12345"}})
+    } catch(e) {
+        return res.json({"response": new Error('Something went wrong')})
+    }
+})
 
 router.post('/register', async (req, res) => {
     try {

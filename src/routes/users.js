@@ -2,7 +2,6 @@ const express = require('express');
 const router = express.Router();
 const auth = require('../middleware/auth');
 const User = require('../_models/user');
-const jwt = require('jsonwebtoken');
 
 router.get('/tutors', async (req, res) => {
     try{
@@ -56,7 +55,7 @@ router.get('/logged-in-user', auth, async (req, res) => {
 })
 
 router.get('/tutor-details', async (req, res) => {
-    User.findById(req.query.id).select('-password -phone -email').then( tutor => {
+    User.findById(req.query.id).select('-password -phone -email -tokens').then( tutor => {
         return res.json({response: tutor});
     }).catch( error => {
         return res.json({error: error});

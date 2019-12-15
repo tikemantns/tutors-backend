@@ -8,16 +8,16 @@ const validator = require('validator');
 
 const userSchema = new Schema({
 	name: { type: String, required: true, index: true },
-	email: { 
-		type: String, 
-		unique: true, 
-		required: true,
-		validate(email){
-			if(!validator.isEmail(email)){
-				throw new Error("Please Enter Valid Email")
-			}
-		}
-	},
+	// email: { 
+		// type: String, 
+		// unique: true, 
+		// required: true,
+		// validate(email){
+		// 	if(!validator.isEmail(email)){
+		// 		throw new Error("Please Enter Valid Email")
+		// 	}
+		// }
+	// },
 	phone: { 
 		type: String, 
 		unique: true, 
@@ -28,20 +28,21 @@ const userSchema = new Schema({
 			}
 		}
 	},
-	gender: { type: String, required: true },
+	gender: { type: String },
 	password: { type: String, required: true },
-	address: { type: String, required: true, index: true },
-	type: { type: String, required: true },
-	schools: { type: String, required: true },
-	graduation: { type: String, required: true },
+	address: { type: String, index: true },
+	type: { type: String },
+	schools: { type: String },
+	graduation: { type: String },
 	other_education: { type: String },
 	classes: { type: String, index: true },
 	subjects: { type: String, index: true },
 	experience: { type: String, index: true },
 	mode_of_tutoring: { type: String, index: true },
 	tution_fee: { type: Number, index: true },
-	tokens:[{token: {type: String, required: true}}],
+	tokens:[{token: {type: String}}],
 	institue: { type: String },
+	about: { type: String },
 	loggedIn_at: { type: Date },
 	loggedOut_at: { type : Date }
 },{
@@ -68,11 +69,12 @@ userSchema.pre('save', async function(next){
    next()
 })
 
-userSchema.post('save', function (error, doc, next) {
-    if (error.name === 'MongoError' && error.code === 11000) 
-        next('This Email/Phone already exists')
-    else next(error)
-})
+// userSchema.post('save', function (error, doc, next) {
+// 	console.log(error); return
+//     if (error.name === 'MongoError' && error.code === 11000) 
+//         next('This Email/Phone already exists')
+//     else next(error)
+// })
 
 userSchema.methods.generateAuthToken = async function(){
 	let user = this
