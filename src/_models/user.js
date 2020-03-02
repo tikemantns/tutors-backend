@@ -8,16 +8,7 @@ const validator = require('validator');
 
 const userSchema = new Schema({
 	name: { type: String, required: true, index: true },
-	// email: { 
-		// type: String, 
-		// unique: true, 
-		// required: true,
-		// validate(email){
-		// 	if(!validator.isEmail(email)){
-		// 		throw new Error("Please Enter Valid Email")
-		// 	}
-		// }
-	// },
+	email: { type: String },
 	phone: { 
 		type: String, 
 		unique: true, 
@@ -29,6 +20,8 @@ const userSchema = new Schema({
 		}
 	},
 	gender: { type: String },
+	language: { type: String },
+	dob: { type: String },
 	password: { type: String, required: true },
 	address: { type: String, index: true },
 	type: { type: String },

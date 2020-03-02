@@ -60,7 +60,7 @@ router.get('/logged-in-user', auth, async (req, res) => {
 })
 
 router.get('/tutor-details', async (req, res) => {
-    User.findById(req.query.id).select('-password -phone -email -tokens').then( tutor => {
+    User.findById(req.query.id).select('-password -tokens').then( tutor => {
         return res.json({response: tutor});
     }).catch( error => {
         return res.json({error: error});

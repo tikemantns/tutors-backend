@@ -15,12 +15,29 @@ router.post('/send-otp', async (req, res) => {
 
 router.post('/register', async (req, res) => {
     try {
-        const newUser = new User(req.body); 
-        const user = await newUser.save();
-        if(!user) return res.json({error: "Something went wrong. Please trying again."});
-        if(user) return res.json({"success": true});
+        const newUser = new User(req.body) 
+        const user = await newUser.save()
+        if(!user) return res.json({error: "Something went wrong. Please try again."})
+        return res.json({"success": true, "id": user.id})
     }catch(err){
         return res.json({error: err});
+    }
+})
+
+router.post('/update-tutor', async (req, res) => {
+    try{
+        const id = req.body.id
+       
+        delete req.body.id
+        const user = await User.findOneAndUpdate({_id: id}, {$set: req.body}, {useFindAndModify: false} , (err, user) => {
+            if(err) {
+                return res.json({error: 'Error while update records!'})
+            }
+            return user
+        })
+        return res.json({res: user})
+    }catch(err){
+        return res.json({error: err})
     }
 })
 
@@ -54,7 +71,7 @@ router.post('/invigilator-registration', async (req, res) => {
         const invigilator = new Invigilator(req.body);
         const registeredInvigilator = await invigilator.save();
         if(!registeredInvigilator) return res.json({error: "Something went wrong. Please trying again."});
-        if(registeredInvigilator) return res.json({"success": true});
+        return res.json({"success": true});
     }catch(err){
         return res.json({error: err});
     }
