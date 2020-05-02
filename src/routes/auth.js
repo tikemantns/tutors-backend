@@ -43,11 +43,12 @@ router.post('/update-tutor', async (req, res) => {
 
 router.post('/login', async (req, res) => {
     try{
-        const user = await User.findByCredentials(req.body.email, req.body.password)
+        // console.log(req.body.phone,'yes')
+        const user = await User.findByCredentials(req.body.phone, req.body.password)
         const token = await user.generateAuthToken()
         return res.json({response: {user, token}});
     }catch(err){
-        console.log(err)
+        // console.log(err)
         return res.json({error: err});
     }
 })
@@ -92,6 +93,19 @@ router.post('/invigilator-login', async (req, res) => {
     }catch(err){
         return res.send(err);
     }
+})
+
+router.get('/duplicate-phone', async (req, res) => {
+    try{
+        const user = await User.findOne({phone: req.query.phone})
+        if(user)
+            return res.send(true)   
+        else
+            return res.send(false)      
+    }catch(err){
+        return res.send(false)
+    }
+    
 })
 
 module.exports = router;
