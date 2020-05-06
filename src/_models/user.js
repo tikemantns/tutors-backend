@@ -13,14 +13,8 @@ const userSchema = new Schema({
 		type: String, 
 		unique: true, 
 		required: true,
-		validate(phone){
-			if(!validator.isMobilePhone(phone)){
-				throw new Error("Please Enter Valid Phone Number")
-			}
-		}
 	},
 	gender: { type: String },
-	language: { type: String },
 	dob: { type: String },
 	password: { type: String, required: true },
 	address: { type: String, index: true },
@@ -29,6 +23,7 @@ const userSchema = new Schema({
 	graduation: { type: String },
 	other_education: { type: String },
 	classes: { type: String, index: true },
+	classes_schedules: { type: String, index: true },
 	subjects: { type: String, index: true },
 	experience: { type: String, index: true },
 	mode_of_tutoring: { type: String, index: true },
