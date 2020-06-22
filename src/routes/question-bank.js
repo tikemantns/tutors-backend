@@ -124,7 +124,7 @@ router.post('/add-questions', async (req, res) => {
 router.get('/get-question-list', async (req, res) => {
     try{
             
-        let obj = { 'name': { $regex: new RegExp(req.query.search, 'i') } }
+        let obj = { 'question_details': { $regex: new RegExp(req.query.search, 'i') } }
         
         let sortObject = {};
         let sortby = req.query.sortby;
